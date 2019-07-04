@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        canvas{
+            width: auto;
+            height: 100vh;
+        }
+
+        button{
+            position: absolute;
+            padding: 12px;
+            cursor: pointer;
+            background-color: #2196F3;
+            color: #fff;
+            border: none;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%,-50%);
+            -moz-transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+            -o-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <button id="button" onclick="snap()">snap!</button>
+    <script>
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        var image = new Image();
+
+        var wid = 0;
+        var ht = 0;
+        var dwid = 0;
+        var dht = 0;
+
+        var parts = [];
+
+        var sqr = 100;
+        image.src = 'thor.png';
+        // ctx.drawImage(image,i,j,dwid,dht,i,j,dwid,dht);
+
+        image.onload = function () {
+            wid = canvas.width = image.width;
+            ht = canvas.height = image.height;
+
+            dwid = wid/sqr;
+            dht = ht/sqr;
+
+            for(var i=0; i< wid; ){
+                for(var j=0; j < ht; ){
+                    var part = {
+                        sx : i,
+                        sy : j,
+                        dx : i,
+                        dy : j,
+                        vx : 2 * Math.random(),
+                        vy : 2 * Math.random()
+                    };
+                    parts.push(part);
+
+                    ctx.drawImage(image,part.sx,part.sy,dwid,dht,part.dx,part.dy,dwid,dht);
+                    j = j+dht;
+                }
+                i = i+dwid;
+            }
+        }
+
+        function snap() {
+            document.getElementById('button').style.display = 'none';
+            ctx.clearRect(0,0,wid,ht);
+            for(var i=0;i< parts.length;i++){
+                var part = parts[i];
+                part.dx = part.dx + part.vx;
+                part.dy = part.dy - part.vy;
+                ctx.drawImage(image,part.sx,part.sy,dwid,dht,part.dx,part.dy,dwid,dht);
+            }
+            requestAnimationFrame(snap);
+        }
+
+        // function drawImg() {
+        //     ctx.clearRect(0,0,wid,ht);
+        //     for(var i=0;i< parts.length;i++){
+        //         var part = parts[i];
+        //         ctx.drawImage(image,part.sx,part.sy,dwid,dht,part.dx,part.dy,dwid,dht);
+        //     }
+        // }
+
+    </script>
+</body>
+</html>
